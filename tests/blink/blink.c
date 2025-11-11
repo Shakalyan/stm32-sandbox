@@ -1,29 +1,24 @@
 #include <stdint.h>
-
-
-#define RCC_BASE ((0x40023800))
-#define RCC_AHB1_REG (*((volatile uint32_t*)(RCC_BASE + 0x30)))
-
-#define GPIOA_BASE ((0x40020000))
-#define GPIOA_MODER_REG (*((volatile uint32_t*)(GPIOA_BASE + 0x00)))
-#define GPIOA_ODR_REG (*((volatile uint32_t*)(GPIOA_BASE + 0x14)))
+#include <gpio/gpio.h>
+#include <addr_map.h>
 
 #define LED ((6))
 
 void main(void)
 {
-    RCC_AHB1_REG |= (1 << 0);
+    pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
+    gpio_init(GPIO, GPIOA);
 
-    volatile uint32_t dummy;
-    dummy = RCC_AHB1_REG;
-    dummy = RCC_AHB1_REG;
+    gpio_set_port_mode(GPIO, LED, GPIO_PORT_MODE_OUTPUT);
 
-    GPIOA_MODER_REG |= (1 << (LED*2));
+    int delay = 1000000;
 
     while (1)
     {
-        GPIOA_ODR_REG ^= (1 << LED);
-        for (uint32_t i = 0; i < 1000000; i++);
+        gpio_set_pin(GPIO, LED);
+        for (uint32_t i = 0; i < delay; i++);
+        gpio_unset_pin(GPIO, LED);
+        for (uint32_t i = 0; i < delay; i++);
     }
 
 }
