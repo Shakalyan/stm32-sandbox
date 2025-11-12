@@ -10,9 +10,11 @@ void main(void)
 
     uart_puts(UART, "Ale eto test\n");
 
+    uart_hex(UART, 170);
+
     while (1) {
-        uart_puts(UART, "test\n");
-        for (int i = 0; i < 3000000; ++i);
+        // uart_puts(UART, "test\n");
+        // for (int i = 0; i < 3000000; ++i);
     }
 
 }

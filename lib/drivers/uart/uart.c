@@ -36,5 +36,19 @@ void uart_puts(puart_t UART, char *s)
             uart_putc(UART, '\r');
         uart_putc(UART, *s++);
     }
+}
 
+void uart_hex(puart_t UART, uint64_t value)
+{
+    uint64_t shift = 0, i = 0;
+    uint8_t byte = 0;
+
+    for (i = 0; i < 16; ++i) {
+        shift = (16-i-1)*4;
+        byte = (value & (0xFULL<<shift)) >> shift;
+        if (byte < 10)
+            uart_putc(UART, '0'+byte);
+        else
+            uart_putc(UART, 'A'+(byte%10));
+    }
 }
