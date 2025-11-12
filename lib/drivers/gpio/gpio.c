@@ -28,3 +28,15 @@ void gpio_unset_pin(pgpio_t GPIO, int pin)
 {
     GPIO->ODR &= ~(1<<pin);
 }
+
+void gpio_set_port_af(pgpio_t GPIO, int pin, int value)
+{
+    if (pin < 8) {
+        GPIO->AFRL &= ~(0b1111<<(4*pin));
+        GPIO->AFRL |= (value<<(4*pin));
+    }
+    else {
+        GPIO->AFRH &= ~(0b1111<<(4*pin));
+        GPIO->AFRH |= (value<<(4*pin));
+    }
+}

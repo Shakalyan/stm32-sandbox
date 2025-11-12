@@ -15,6 +15,9 @@
 #define GPIOG_BASE ((0x40021800))
 #define GPIOH_BASE ((0x40021C00))
 
+// UART
+#define UART2_BASE ((0x40004400))
+
 
 #endif
 

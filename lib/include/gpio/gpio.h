@@ -42,5 +42,7 @@ void gpio_set_pin(pgpio_t GPIO, int pin);
 
 void gpio_unset_pin(pgpio_t GPIO, int pin);
 
+void gpio_set_port_af(pgpio_t GPIO, int pin, int value);
+
 
 #endif
