@@ -1,0 +1,4 @@
+#define CONFIG_BOARD "nucleo-f446re"
+#define CONFIG_SYSCLK_FREQ 84
+#define CONFIG_DRIVER_GPIO 1
+#define CONFIG_TEST_BLINK 1

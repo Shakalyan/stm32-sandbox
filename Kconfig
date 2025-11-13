@@ -1,0 +1,24 @@
+mainmenu "STM32 Project Configuration"
+
+menu "General Options"
+config BOARD
+    string "Target board"
+    default "nucleo-f446re"
+
+config SYSCLK_FREQ
+    int "System clock frequency (MHz)"
+    default 84
+endmenu
+
+
+menu "Select drivers"
+source "lib/drivers/*/Kconfig"
+endmenu
+
+
+choice
+    prompt "Select test"
+    default TEST_BLINK
+
+source "tests/*/Kconfig"
+endchoice

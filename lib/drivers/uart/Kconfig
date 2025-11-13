@@ -1,0 +1,11 @@
+config DRIVER_UART
+    bool "UART"
+    default n
+    select DRIVER_GPIO
+
+
+if DRIVER_UART
+    config UART_BAUD_RATE
+        int "Baud rate"
+        default "115200"
+endif
