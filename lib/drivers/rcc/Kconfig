@@ -1,0 +1,3 @@
+config DRIVER_RCC
+    bool "RCC"
+    default y

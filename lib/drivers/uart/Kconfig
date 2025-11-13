@@ -1,6 +1,7 @@
 config DRIVER_UART
     bool "UART"
     default n
+    select DRIVER_RCC
     select DRIVER_GPIO
 
 

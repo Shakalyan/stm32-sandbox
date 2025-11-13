@@ -1,13 +1,9 @@
-mainmenu "STM32 Project Configuration"
+mainmenu "STM32 configuration"
 
 menu "General Options"
-config BOARD
-    string "Target board"
-    default "nucleo-f446re"
-
-config SYSCLK_FREQ
+config SYSCLK_MHZ
     int "System clock frequency (MHz)"
-    default 84
+    default 16
 endmenu
 
 

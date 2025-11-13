@@ -2,6 +2,9 @@
 #define _RCC_H_
 
 #include <stdint.h>
+#include <common.h>
+#include <gpio/gpio.h>
+#include <uart/uart.h>
 
 typedef volatile struct rcc
 {
@@ -45,5 +48,11 @@ typedef volatile struct rcc
     uint32_t DCKCFGR2;
 } rcc_t;
 typedef volatile rcc_t* prcc_t;
+
+
+void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
+
+void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num);
+
 
 #endif

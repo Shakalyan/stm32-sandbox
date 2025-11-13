@@ -2,6 +2,7 @@
 #define _UART_H_
 
 #include <stdint.h>
+#define UART_OVER8 ((0))
 
 typedef volatile struct uart {
     uint32_t SR;
@@ -14,7 +15,16 @@ typedef volatile struct uart {
 } uart_t;
 typedef volatile uart_t* puart_t;
 
-void uart_init(puart_t UART, uint16_t baud);
+typedef enum uart_num {
+    UART1 = 1,
+    UART2,
+    UART3,
+    UART4,
+    UART5,
+    UART6
+} uart_num_t;
+
+void uart_init(puart_t UART, uart_num_t uart_num);
 
 void uart_putc(puart_t UART, uint8_t symbol);
 

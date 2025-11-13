@@ -18,7 +18,7 @@ typedef volatile struct gpio
 } gpio_t;
 typedef volatile gpio_t* pgpio_t;
 
-enum GPIO_PORT {
+typedef enum gpio_port {
     GPIOA = 0,
     GPIOB,
     GPIOC,
@@ -27,14 +27,14 @@ enum GPIO_PORT {
     GPIOF,
     GPIOG,
     GPIOH
-};
+} gpio_port_t;
 
 #define GPIO_PORT_MODE_INPUT  ((0b00))
 #define GPIO_PORT_MODE_OUTPUT ((0b01))
 #define GPIO_PORT_MODE_AF     ((0b10))
 #define GPIO_PORT_MODE_ANALOG ((0b11))
 
-void gpio_init(pgpio_t GPIO, enum GPIO_PORT port);
+void gpio_init(pgpio_t GPIO, gpio_port_t port);
 
 void gpio_set_port_mode(pgpio_t GPIO, int pin, int mode);
 

@@ -1,3 +1,4 @@
 config DRIVER_GPIO
     bool "GPIO"
     default n
+    select DRIVER_RCC

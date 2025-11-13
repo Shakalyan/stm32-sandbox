@@ -2,15 +2,20 @@
 #include <rcc/rcc.h>
 #include <addr_map.h>
 #include <gpio/gpio.h>
+#include <config.h>
+#include <common.h>
 
-#define SYSCLK ((8000000)) // TODO: calculate
 
-void uart_init(puart_t UART, uint16_t baud)
+void uart_init(puart_t UART, uart_num_t uart_num)
 {
     prcc_t RCC = (prcc_t)RCC_BASE;
     pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
+    uint32_t mant = 0, frac = 0;
+    uint32_t sysclk = CONFIG_SYSCLK_MHZ * 1000000;
+    uint32_t del = (8*(2-UART_OVER8)*CONFIG_UART_BAUD_RATE);
+    uint32_t prec = 100;
 
-    RCC->APB1ENR |= (1<<17);
+    rcc_uart_enable(RCC, uart_num);
 
     gpio_init(GPIO, GPIOA);
     gpio_set_port_mode(GPIO, 2, GPIO_PORT_MODE_AF);
@@ -18,9 +23,16 @@ void uart_init(puart_t UART, uint16_t baud)
     gpio_set_port_af(GPIO, 2, 7);
     gpio_set_port_af(GPIO, 3, 7);
 
-    //USART->BRR = (uint16_t)(SYSCLK / baud);
-    UART->BRR = 0x8B; //0x45; // 115200
-    UART->CR1 = (1<<13) | (1<<3) | (1<<2);
+    mant = sysclk / del;
+
+    frac = (((sysclk*prec / del) % prec)*16 + (prec/2)) / prec;
+    if (frac > 15) frac = 15;
+    frac = frac & (0b1111>>UART_OVER8);
+
+    UART->BRR = ((mant<<(4-UART_OVER8)) + frac);
+    UART->CR1 = (1<<13) | (1<<3) | (1<<2); // UART + TX + RX
+    __DSB();
+    __ISB();
 }
 
 void uart_putc(puart_t UART, uint8_t symbol)
