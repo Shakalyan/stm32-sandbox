@@ -1,0 +1,4 @@
+config TEST_VOLTAGE_CHECK
+    bool "Voltage check"
+    default n
+    select DRIVER_GPIO

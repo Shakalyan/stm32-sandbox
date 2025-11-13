@@ -1,9 +1,26 @@
 mainmenu "STM32 configuration"
 
 menu "General Options"
-config SYSCLK_MHZ
-    int "System clock frequency (MHz)"
-    default 16
+
+choice
+    prompt "Select sysclk frequency"
+    default SYSCLK_16MHZ
+
+    config SYSCLK_16MHZ
+        bool "16MHz"
+
+endchoice
+
+choice
+    prompt "Select system voltage"
+    default VOLTAGE_3_3V
+
+    config VOLTAGE_3_3V
+        bool "3.3V"
+        default y
+
+endchoice
+
 endmenu
 
 
