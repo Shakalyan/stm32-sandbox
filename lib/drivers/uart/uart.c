@@ -10,8 +10,8 @@ void uart_init(puart_t UART, uart_num_t uart_num)
     prcc_t RCC = (prcc_t)RCC_BASE;
     pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
     uint32_t mant = 0, frac = 0;
-    uint32_t sysclk = SYSCLK_MHZ * 1000000;
-    uint32_t del = (8*(2-UART_OVER8)*CONFIG_UART_BAUD_RATE);
+    uint32_t sysclk = 16 * 1000000; // TODO: fix
+    uint32_t div = (8*(2-UART_OVER8)*CONFIG_UART_BAUD_RATE);
     uint32_t prec = 100;
 
     rcc_uart_enable(RCC, uart_num);
@@ -22,9 +22,9 @@ void uart_init(puart_t UART, uart_num_t uart_num)
     gpio_set_port_af(GPIO, 2, 7);
     gpio_set_port_af(GPIO, 3, 7);
 
-    mant = sysclk / del;
+    mant = sysclk / div;
 
-    frac = (((sysclk*prec / del) % prec)*16 + (prec/2)) / prec;
+    frac = (((sysclk*prec / div) % prec)*16 + (prec/2)) / prec;
     if (frac > 15) frac = 15;
     frac = frac & (0b1111>>UART_OVER8);
 
