@@ -25,6 +25,7 @@ BUILD_DIR = build/
 KCONFIGLIB_DIR = tools/kconfiglib
 
 CC = arm-none-eabi-gcc
+OBJDUMP = arm-none-eabi-objdump
 
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb
@@ -47,7 +48,7 @@ clean:
 
 build: genheader
 	@$(CC) $(CFLAGS) $(TEST_SRC) $(DRIVERS_SRC) $(BOOT_CODE) -T $(LINKER_SCRIPT) $(INCLUDES) -o $(BUILD_DIR)/$(ACTIVE_TEST).elf
-
+	@$(OBJDUMP) -D $(BUILD_DIR)/$(ACTIVE_TEST).elf > $(BUILD_DIR)/$(ACTIVE_TEST).dis
 
 flash:
 	@openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $(BUILD_DIR)/$(ACTIVE_TEST).elf verify reset exit"
@@ -55,6 +56,10 @@ flash:
 
 open-uart:
 	@minicom --baudrate $(UART_BAUD_RATE) --device /dev/ttyACM0
+
+
+open-gdb:
+	@openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
 
 
 menuconfig:

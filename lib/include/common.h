@@ -6,6 +6,7 @@
 
 #define BIT(x) ((1<<x))
 #define MHZ_TO_KHZ(f) ((f*1000))
+#define KHZ_TO_MHZ(f) ((f/1000))
 
 #define __DMB(notused)  {{__asm volatile ("dmb sy" ::: "memory");}}
 #define __DSB(notused)  {{__asm volatile ("dsb sy" ::: "memory");}}

@@ -18,6 +18,8 @@
 // UART
 #define UART2_BASE ((0x40004400))
 
+// FLASH
+#define FLASH_BASE ((0x40023C00))
 
 #endif
 

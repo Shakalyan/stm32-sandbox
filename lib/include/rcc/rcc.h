@@ -12,6 +12,12 @@
 #define RCC_CFGR_CLK_PLL_P ((0b10))
 #define RCC_CFGR_CLK_PLL_R ((0b11))
 
+#define RCC_CFGR_APB_PRESCALE_1  ((0b000))
+#define RCC_CFGR_APB_PRESCALE_2  ((0b100))
+#define RCC_CFGR_APB_PRESCALE_4  ((0b101))
+#define RCC_CFGR_APB_PRESCALE_8  ((0b110))
+#define RCC_CFGR_APB_PRESCALE_16 ((0b111))
+
 
 typedef volatile struct rcc
 {
@@ -59,13 +65,19 @@ typedef volatile rcc_t* prcc_t;
 
 int rcc_init(prcc_t RCC);
 
-uint32_t rcc_set_sysclk_freq(prcc_t RCC, uint32_t desired_freq_khz);
+uint32_t rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz);
 
 void rcc_switch_sysclk_src(prcc_t RCC, uint32_t src);
 
 void rcc_turn_on_clk(prcc_t RCC, uint32_t clk);
 
 void rcc_turn_off_clk(prcc_t RCC, uint32_t clk);
+
+void rcc_update_prescales(prcc_t RCC, uint32_t new_freq_mhz);
+
+void rcc_set_apb1_prescale(prcc_t RCC, uint32_t prescale);
+
+void rcc_set_apb2_prescale(prcc_t RCC, uint32_t prescale);
 
 void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
 
