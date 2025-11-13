@@ -10,10 +10,38 @@ static uint32_t abs(uint32_t x)
 }
 
 
-static uint32_t get_best_sysclk(uint32_t desired_freq_khz, uint32_t vco_in, uint32_t *plln, uint32_t *pllp)
+
+static int get_clk_src_base_bit(uint32_t clk)
+{
+    if (clk == RCC_CFGR_CLK_HSI) return 0;
+    if (clk == RCC_CFGR_CLK_HSE) return 16;
+    return 24;
+}
+
+
+void rcc_turn_on_clk(prcc_t RCC, uint32_t clk)
+{
+    int base_bit = get_clk_src_base_bit(clk);
+
+    RCC->CR |= (1<<base_bit);
+
+    while (!(RCC->CR & (1<<(base_bit+1))));
+}
+
+void rcc_turn_off_clk(prcc_t RCC, uint32_t clk)
+{
+    int base_bit = get_clk_src_base_bit(clk);
+
+    RCC->CR &= ~(1<<base_bit);
+
+    while (RCC->CR & (1<<(base_bit+1)));
+}
+
+
+static uint32_t get_best_freq(uint32_t desired_freq_khz, uint32_t vco_in, uint32_t *plln, uint32_t *pllp)
 {
     uint32_t n, p, vco_out, curr_freq_khz;
-    uint32_t best_sysclk_khz = 0;
+    uint32_t best_freq_khz = 0;
 
     for (n = 50; n < 433; ++n) {
         vco_out = vco_in * n;
@@ -22,17 +50,30 @@ static uint32_t get_best_sysclk(uint32_t desired_freq_khz, uint32_t vco_in, uint
 
         for (p = 0; p < 4; ++p) {
             curr_freq_khz = vco_out / (2*(p+1));
-            if (abs(desired_freq_khz - curr_freq_khz) < abs(desired_freq_khz - best_sysclk_khz)) {
-                best_sysclk_khz = curr_freq_khz;
+            if (abs(desired_freq_khz - curr_freq_khz) < abs(desired_freq_khz - best_freq_khz)) {
+                best_freq_khz = curr_freq_khz;
                 *plln = n;
                 *pllp = p;
-                if (best_sysclk_khz == desired_freq_khz)
-                    return best_sysclk_khz;
+                if (best_freq_khz == desired_freq_khz)
+                    return best_freq_khz;
             }
         }
     }
 
-    return best_sysclk_khz;
+    return best_freq_khz;
+}
+
+
+void rcc_switch_sysclk_src(prcc_t RCC, uint32_t src)
+{
+    uint32_t cfgr;
+
+    rcc_turn_on_clk(RCC, src);
+
+    cfgr = RCC->CFGR;
+    cfgr &= ~0b11;
+    cfgr |= src;
+    while ((RCC->CFGR & (0b11<<2)) != src<<2);
 }
 
 
@@ -52,14 +93,14 @@ uint32_t rcc_set_sysclk_freq(prcc_t RCC, uint32_t desired_freq_khz)
         return INCLK_FREQ_NOT_SUPPORTED;
 
     vco_in = inclk_khz / pllm;
-    actual_freq_khz = get_best_sysclk(desired_freq_khz, vco_in, &plln, &pllp);
+    actual_freq_khz = get_best_freq(desired_freq_khz, vco_in, &plln, &pllp);
 #else
     for (m = 2; m < 64; ++m) {
         vco_in = inclk_khz / m;
         if (vco_in > MHZ_TO_KHZ(2)) continue;
         if (vco_in < MHZ_TO_KHZ(1)) break;
 
-        curr_freq_khz = get_best_sysclk(desired_freq_khz, vco_in, &n, &p);
+        curr_freq_khz = get_best_freq(desired_freq_khz, vco_in, &n, &p);
         if (abs(desired_freq_khz - curr_freq_khz) < abs(desired_freq_khz - actual_freq_khz)) {
             actual_freq_khz = curr_freq_khz;
             plln = n;
@@ -68,12 +109,25 @@ uint32_t rcc_set_sysclk_freq(prcc_t RCC, uint32_t desired_freq_khz)
     }
 #endif
 
+
+
     return actual_freq_khz;
 }
 
 
 int rcc_init(prcc_t RCC)
 {
+    /*
+        PLL off
+        FLASH cycles
+        Prescalers
+        PLL setup
+
+    */
+
+    rcc_switch_sysclk_src(RCC, RCC_CFGR_CLK_HSI);
+
+
     return 0;
 }
 

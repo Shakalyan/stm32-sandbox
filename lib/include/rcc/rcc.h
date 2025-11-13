@@ -6,6 +6,13 @@
 #include <gpio/gpio.h>
 #include <uart/uart.h>
 
+
+#define RCC_CFGR_CLK_HSI   ((0b00))
+#define RCC_CFGR_CLK_HSE   ((0b01))
+#define RCC_CFGR_CLK_PLL_P ((0b10))
+#define RCC_CFGR_CLK_PLL_R ((0b11))
+
+
 typedef volatile struct rcc
 {
     uint32_t CR;
@@ -53,6 +60,12 @@ typedef volatile rcc_t* prcc_t;
 int rcc_init(prcc_t RCC);
 
 uint32_t rcc_set_sysclk_freq(prcc_t RCC, uint32_t desired_freq_khz);
+
+void rcc_switch_sysclk_src(prcc_t RCC, uint32_t src);
+
+void rcc_turn_on_clk(prcc_t RCC, uint32_t clk);
+
+void rcc_turn_off_clk(prcc_t RCC, uint32_t clk);
 
 void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
 

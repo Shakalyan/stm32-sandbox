@@ -9,6 +9,7 @@ void main(void)
 
     prcc_t RCC = (prcc_t)RCC_BASE;
     uint32_t actual_freq = rcc_set_sysclk_freq(RCC, MHZ_TO_KHZ(SYSCLK_MHZ));
+    rcc_init(RCC);
 
     uart_init(UART, UART2);
 
