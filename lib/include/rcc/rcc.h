@@ -83,5 +83,11 @@ void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
 
 void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num);
 
+uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC);
+
+uint32_t rcc_get_apb1_freq_khz(prcc_t RCC);
+
+uint32_t rcc_get_apb2_freq_khz(prcc_t RCC);
+
 
 #endif

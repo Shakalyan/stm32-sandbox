@@ -10,7 +10,7 @@ void uart_init(puart_t UART, uart_num_t uart_num)
     prcc_t RCC = (prcc_t)RCC_BASE;
     pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
     uint32_t mant = 0, frac = 0;
-    uint32_t sysclk = 36 * 1000000; // TODO: fix
+    uint32_t sysclk = rcc_get_apb1_freq_khz(RCC)*1000; // TODO: fix
     uint32_t div = (8*(2-UART_OVER8)*CONFIG_UART_BAUD_RATE);
     uint32_t prec = 100;
 

@@ -225,6 +225,50 @@ int rcc_init(prcc_t RCC)
 }
 
 
+uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC)
+{
+    uint32_t plln, pllm, pllp, pllr;
+    uint32_t clk_src = (RCC->CFGR & 0b11<<2)>>2;
+
+    if (clk_src == RCC_CFGR_CLK_HSI ||
+        clk_src == RCC_CFGR_CLK_HSE)
+        return MHZ_TO_KHZ(INCLK_MHZ);
+
+
+    pllm = RCC->PLLCFGR & (0x3F<<0);
+    plln = (RCC->PLLCFGR & (0x1FF<<6))>>6;
+
+    if (clk_src == RCC_CFGR_CLK_PLL_P) {
+        pllp = (RCC->PLLCFGR & (0x3<<16))>>16;
+
+        return (MHZ_TO_KHZ(INCLK_MHZ)*plln) / (pllm*(2<<pllp));
+    }
+
+    pllr = (RCC->PLLCFGR & (0x3<<28))>>28;
+    return (MHZ_TO_KHZ(INCLK_MHZ)*plln) / (pllm*pllr);
+}
+
+
+uint32_t rcc_get_apb1_freq_khz(prcc_t RCC)
+{
+    uint32_t sysclk_freq = rcc_get_sysclk_freq_khz(RCC);
+    uint32_t ppre1 = (RCC->CFGR & (0b111<<10))>>10;
+    if ((ppre1 & 0b100) == 0)
+        return sysclk_freq;
+    return sysclk_freq / (2<<(ppre1&0b11));
+}
+
+
+uint32_t rcc_get_apb2_freq_khz(prcc_t RCC)
+{
+    uint32_t sysclk_freq = rcc_get_sysclk_freq_khz(RCC);
+    uint32_t ppre2 = (RCC->CFGR & (0b111<<13))>>13;
+    if ((ppre2 & 0b100) == 0)
+        return sysclk_freq;
+    return sysclk_freq / (2<<(ppre2&0b11));
+}
+
+
 void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num)
 {
     if (uart_num == 1) {
