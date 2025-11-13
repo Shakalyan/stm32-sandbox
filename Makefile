@@ -4,10 +4,12 @@ BOOT_DIR = boot
 LINKER_SCRIPT = $(BOOT_DIR)/default.ld
 BOOT_CODE = $(BOOT_DIR)/boot.c
 
+
 # TESTS
 TESTS_DIR = tests
 ACTIVE_TEST = $(shell grep -E "^CONFIG_TEST_.*=y" .config | sed -E 's/CONFIG_TEST_//g' | cut -d= -f1 | tr A-Z a-z)
 TEST_SRC = $(TESTS_DIR)/$(ACTIVE_TEST)/*.c
+
 
 # DRIVERS
 DRIVERS_DIR = lib/drivers
@@ -15,6 +17,7 @@ ACTIVE_DRIVERS = $(shell grep -E "^CONFIG_DRIVER_.*=y" .config | sed -E 's/CONFI
 DRIVERS_SRC = $(foreach dir,$(ACTIVE_DRIVERS),$(DRIVERS_DIR)/$(dir)/*.c)
 
 UART_BAUD_RATE = $(shell grep -E "^CONFIG_UART_BAUD_RATE" .config | cut -d= -f2)
+
 
 # BUILD
 BUILD_DIR = build/
@@ -28,6 +31,7 @@ CFLAGS += -mthumb
 CFLAGS += -nostdlib
 
 INCLUDES += -Ilib/include
+
 
 # TARGETS
 
