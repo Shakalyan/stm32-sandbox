@@ -1,6 +1,7 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+
 #include <config.h>
 
 #define BIT(x) ((1<<x))
@@ -12,5 +13,6 @@
 #ifdef CONFIG_SYSCLK_16MHZ
 #define SYSCLK_MHZ ((16))
 #endif
+
 
 #endif

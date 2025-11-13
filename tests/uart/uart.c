@@ -11,6 +11,7 @@ void main(void)
     uart_puts(UART, "UART utest\n");
     uart_puts(UART, "UARTDIV: ");
     uart_hex(UART, UART->BRR);
+    uart_puts(UART, "\n");
 
     while (1) {
         // uart_puts(UART, "test\n");

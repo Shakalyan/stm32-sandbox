@@ -2,7 +2,6 @@
 #include <rcc/rcc.h>
 #include <addr_map.h>
 #include <gpio/gpio.h>
-#include <config.h>
 #include <common.h>
 
 
@@ -11,7 +10,7 @@ void uart_init(puart_t UART, uart_num_t uart_num)
     prcc_t RCC = (prcc_t)RCC_BASE;
     pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
     uint32_t mant = 0, frac = 0;
-    uint32_t sysclk = CONFIG_SYSCLK_MHZ * 1000000;
+    uint32_t sysclk = SYSCLK_MHZ * 1000000;
     uint32_t del = (8*(2-UART_OVER8)*CONFIG_UART_BAUD_RATE);
     uint32_t prec = 100;
 
