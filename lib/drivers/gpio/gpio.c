@@ -16,6 +16,7 @@ void gpio_init(pgpio_t GPIO, enum GPIO_PORT port)
 
 void gpio_set_port_mode(pgpio_t GPIO, int pin, int mode)
 {
+    GPIO->MODER &= ~(0b11<<(pin*2));
     GPIO->MODER |= (mode<<(pin*2));
 }
 
