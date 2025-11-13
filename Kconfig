@@ -2,14 +2,39 @@ mainmenu "STM32 configuration"
 
 menu "General Options"
 
-choice
-    prompt "Select sysclk frequency"
-    default SYSCLK_16MHZ
 
-    config SYSCLK_16MHZ
-        bool "16MHz"
+config PLL_ON
+    bool "Turn on PLL"
+    default y
 
-endchoice
+if PLL_ON
+    choice
+        prompt "Select input clock for PLL"
+        default PLL_INPUT_HSI
+
+        config PLL_INPUT_HSI
+            bool "HSI"
+            default y
+    endchoice
+
+    config PLLM_PRESET
+        bool "Preset PLLM=2"
+        default y
+        help
+            "It is recommended to select a frequency of 2 MHz to limit PLL jitter."
+
+endif
+
+config CUSTOM_SYSCLK
+    bool "Set desired frequency. Default is 16MHz"
+    default y
+    select PLL_ON
+
+if CUSTOM_SYSCLK
+    config SYSCLK_MHZ
+        int "Frequency (MHz)"
+        default 16
+endif
 
 choice
     prompt "Select system voltage"

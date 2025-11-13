@@ -4,8 +4,8 @@
 typedef enum error {
     SUCCESS = 0,
     VOLTAGE_NOT_SUPPORTED = 1,
-    SYSCLK_NOT_SUPPORTED,
-
+    SYSCLK_FREQ_NOT_SUPPORTED,
+    INCLK_FREQ_NOT_SUPPORTED
 } error_t;
 
 #endif

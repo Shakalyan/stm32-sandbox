@@ -50,6 +50,10 @@ typedef volatile struct rcc
 typedef volatile rcc_t* prcc_t;
 
 
+int rcc_init(prcc_t RCC);
+
+uint64_t rcc_set_sysclk_freq(prcc_t RCC, uint64_t desired_freq);
+
 void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
 
 void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num);

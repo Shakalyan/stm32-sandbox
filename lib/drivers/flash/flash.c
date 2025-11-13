@@ -34,7 +34,7 @@ int flash_update_cycles(pflash_t FLASH, int new_sysclk_mhz)
     uint32_t ws = 0;
 
     if (new_sysclk_mhz < 0 || new_sysclk_mhz > 180)
-        return SYSCLK_NOT_SUPPORTED;
+        return SYSCLK_FREQ_NOT_SUPPORTED;
 
 #ifdef CONFIG_VOLTAGE_3_3V
     update_cycles(FLASH, new_sysclk_mhz, 30);
