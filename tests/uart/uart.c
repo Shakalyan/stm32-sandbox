@@ -10,23 +10,23 @@ void main(void)
     prcc_t RCC = (prcc_t)RCC_BASE;
     int res;
 
-    uart_init(UART, UART2);
+    // uart_init(UART, UART2);
 
-    uart_puts(UART, "Before switch to PLL...\n");
-    uart_puts(UART, "INCLK: ");
-    uart_hex(UART, INCLK_MHZ*1000000);
-    uart_puts(UART, "\n");
-    uart_puts(UART, "ACTUAL SYSCLK: ");
-    uart_hex(UART, rcc_get_sysclk_freq_khz(RCC)*1000);
-    uart_puts(UART, "\n");
+    // uart_puts(UART, "Before switch to PLL...\n");
+    // uart_puts(UART, "INCLK: ");
+    // uart_hex(UART, INCLK_MHZ*1000000);
+    // uart_puts(UART, "\n");
+    // uart_puts(UART, "ACTUAL SYSCLK: ");
+    // uart_hex(UART, rcc_get_sysclk_freq_khz(RCC)*1000);
+    // uart_puts(UART, "\n");
 
-    res = rcc_init(RCC);
-    if (res != SUCCESS) {
-        uart_puts(UART, "Error: ");
-        uart_hex(UART, res);
-        uart_puts(UART, "\n");
-        goto Finish;
-    }
+    // res = rcc_init(RCC);
+    // if (res != SUCCESS) {
+    //     uart_puts(UART, "Error: ");
+    //     uart_hex(UART, res);
+    //     uart_puts(UART, "\n");
+    //     goto Finish;
+    // }
 
     uart_init(UART, UART2);
     uart_puts(UART, "UART utest\n");
@@ -36,6 +36,7 @@ void main(void)
     uart_puts(UART, "ACTUAL SYSCLK: ");
     uart_hex(UART, rcc_get_apb1_freq_khz(RCC)*1000);
     uart_puts(UART, "\n");
+    uart_uint32(UART, 123);
 
 Finish:
     while (1) {

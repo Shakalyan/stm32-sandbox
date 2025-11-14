@@ -19,6 +19,11 @@ DRIVERS_SRC = $(foreach dir,$(ACTIVE_DRIVERS),$(DRIVERS_DIR)/$(dir)/*.c)
 UART_BAUD_RATE = $(shell grep -E "^CONFIG_UART_BAUD_RATE" .config | cut -d= -f2)
 
 
+# COMMON
+COMMON_DIR = lib/common
+COMMON_SRC = $(COMMON_DIR)/test_runner/test_runner.c $(COMMON_DIR)/log/log.c
+
+
 # BUILD
 BUILD_DIR = build/
 
@@ -39,7 +44,9 @@ INCLUDES += -Ilib/include
 .DEFAULT_GOAL := build
 
 test:
-	@echo $(UART_BAUD_RATE)
+	@echo $(DRIVERS_SRC)
+	@echo $(TEST_SRC)
+	@echo $(COMMON_SRC)
 
 
 clean:
@@ -47,7 +54,7 @@ clean:
 
 
 build: genheader
-	@$(CC) $(CFLAGS) $(TEST_SRC) $(DRIVERS_SRC) $(BOOT_CODE) -T $(LINKER_SCRIPT) $(INCLUDES) -o $(BUILD_DIR)/$(ACTIVE_TEST).elf
+	@$(CC) $(CFLAGS) $(TEST_SRC) $(DRIVERS_SRC) $(COMMON_SRC) $(BOOT_CODE) -T $(LINKER_SCRIPT) $(INCLUDES) -o $(BUILD_DIR)/$(ACTIVE_TEST).elf
 	@$(OBJDUMP) -D $(BUILD_DIR)/$(ACTIVE_TEST).elf > $(BUILD_DIR)/$(ACTIVE_TEST).dis
 
 flash:

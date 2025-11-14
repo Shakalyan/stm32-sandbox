@@ -7,7 +7,7 @@
 extern uint32_t _sdata, _edata, _sbss, _ebss, _etext;
 
 void reset_handler(void);
-void main(void);
+void run_test(void);
 
 uint32_t isr_vector[ISR_VECTOR_TABLE_SIZE] __attribute__((section(".isr_vector"))) =
 {
@@ -32,5 +32,5 @@ void reset_handler(void)
     for (i = 0; i < bss_size; ++i)
         bss[i] = 0;
 
-    main();
+    run_test();
 }

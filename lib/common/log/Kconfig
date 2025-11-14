@@ -1,0 +1,15 @@
+config COMMON_LOGGER
+    bool "Use logger"
+    default y
+    depends on COMMON_TEST_RUNNER
+
+config LOG_LEVEL
+    int "Log level"
+    default 5
+    depends on COMMON_LOGGER
+    help
+        1 - FATAL
+        2 - ERROR
+        3 - WARNING
+        4 - INFO
+        5 - DEBUG

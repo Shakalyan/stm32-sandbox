@@ -1,7 +1,8 @@
 mainmenu "STM32 configuration"
 
-menu "General Options"
 
+
+menu "MCU Options"
 
 config PLL_ON
     bool "Turn on PLL"
@@ -45,6 +46,13 @@ choice
         default y
 
 endchoice
+
+endmenu
+
+
+menu "Build Options"
+
+source "lib/common/*/Kconfig"
 
 endmenu
 

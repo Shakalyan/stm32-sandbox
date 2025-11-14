@@ -1,0 +1,3 @@
+config COMMON_TEST_RUNNER
+    bool "Use test runner"
+    default y
