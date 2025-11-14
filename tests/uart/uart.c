@@ -2,6 +2,7 @@
 #include <addr_map.h>
 #include <rcc/rcc.h>
 #include <errors.h>
+#include <common/log/log.h>
 
 
 void main(void)
@@ -37,6 +38,12 @@ void main(void)
     uart_hex(UART, rcc_get_apb1_freq_khz(RCC)*1000);
     uart_puts(UART, "\n");
     uart_uint32(UART, 123);
+    pr_debug("UART BRR: %x\n", UART->BRR);
+
+    // uint32_t pllm = RCC->PLLCFGR & (0x3F<<0);
+    // uint32_t plln = (RCC->PLLCFGR & (0x1FF<<6))>>6;
+    // uint32_t pllp = (RCC->PLLCFGR & (0x3<<16))>>16;
+    // pr_info("pllm: %u, plln: %u, pllp: %u\n", pllm, plln, pllp);
 
 Finish:
     while (1) {

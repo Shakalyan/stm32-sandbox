@@ -65,7 +65,7 @@ typedef volatile rcc_t* prcc_t;
 
 int rcc_init(prcc_t RCC);
 
-uint32_t rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz);
+int rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz, uint32_t *actual_freq_khz);
 
 void rcc_switch_sysclk_src(prcc_t RCC, uint32_t src);
 

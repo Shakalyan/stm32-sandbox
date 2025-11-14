@@ -14,7 +14,7 @@
 #define __WAIT_TICKS(x) {{__asm volatile ("nop");}}
 
 
-#ifndef CONFIG_PLL_ON
+#ifndef CONFIG_CUSTOM_SYSCLK
 #define SYSCLK_MHZ ((16))
 #else
 #define SYSCLK_MHZ CONFIG_SYSCLK_MHZ

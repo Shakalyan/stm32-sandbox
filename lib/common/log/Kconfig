@@ -2,6 +2,7 @@ config COMMON_LOGGER
     bool "Use logger"
     default y
     depends on COMMON_TEST_RUNNER
+    select DRIVER_UART
 
 config LOG_LEVEL
     int "Log level"

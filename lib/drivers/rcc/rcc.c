@@ -81,13 +81,16 @@ static uint32_t get_best_freq(uint32_t desired_freq_khz, uint32_t vco_in, uint32
 }
 
 
-uint32_t rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz) // TODO: PLLQ, PLLR, HSE IN
+// TODO: PLLQ, PLLR, HSE IN
+int rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz, uint32_t *actual_freq_khz)
 {
     uint32_t inclk_khz = MHZ_TO_KHZ(INCLK_MHZ);
-    uint32_t actual_freq_khz = 0, curr_freq_khz;
+    uint32_t curr_freq_khz;
     uint32_t vco_in;
     uint32_t plln = 0, pllm = 0, pllp = 0, n, m, p;
     uint32_t pllcfgr;
+
+    *actual_freq_khz = 0;
 
     if (desired_freq_khz < 0 || desired_freq_khz > MHZ_TO_KHZ(180))
         return SYSCLK_FREQ_NOT_SUPPORTED;
@@ -98,7 +101,7 @@ uint32_t rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz) // TODO: PLLQ, 
         return INCLK_FREQ_NOT_SUPPORTED;
 
     vco_in = inclk_khz / pllm;
-    actual_freq_khz = get_best_freq(desired_freq_khz, vco_in, &plln, &pllp);
+    *actual_freq_khz = get_best_freq(desired_freq_khz, vco_in, &plln, &pllp);
 #else
     for (m = 2; m < 64; ++m) {
         vco_in = inclk_khz / m;
@@ -106,10 +109,11 @@ uint32_t rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz) // TODO: PLLQ, 
         if (vco_in < MHZ_TO_KHZ(1)) break;
 
         curr_freq_khz = get_best_freq(desired_freq_khz, vco_in, &n, &p);
-        if (abs(desired_freq_khz - curr_freq_khz) < abs(desired_freq_khz - actual_freq_khz)) {
-            actual_freq_khz = curr_freq_khz;
+        if (abs(desired_freq_khz - curr_freq_khz) < abs(desired_freq_khz - *actual_freq_khz)) {
+            *actual_freq_khz = curr_freq_khz;
             plln = n;
             pllp = p;
+            pllm = m;
         }
     }
 #endif
@@ -129,7 +133,7 @@ uint32_t rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz) // TODO: PLLQ, 
 
     RCC->PLLCFGR = pllcfgr;
 
-    return actual_freq_khz;
+    return SUCCESS;
 }
 
 
@@ -207,19 +211,23 @@ int rcc_init(prcc_t RCC)
     pflash_t FLASH = (pflash_t)FLASH_BASE;
     int err;
 
+#ifdef CONFIG_PLL_ON
     rcc_switch_sysclk_src(RCC, RCC_CFGR_CLK_HSI);
     rcc_turn_off_clk(RCC, RCC_CFGR_CLK_PLL_P);
 
-    actual_freq_khz = rcc_set_pll_freq(RCC, MHZ_TO_KHZ(SYSCLK_MHZ));
-    actual_freq_khz = KHZ_TO_MHZ(actual_freq_khz);
+    err = rcc_set_pll_freq(RCC, MHZ_TO_KHZ(SYSCLK_MHZ), &actual_freq_khz);
+    if (err != SUCCESS) {
+        return err;
+    }
 
-    err = flash_update_cycles(FLASH, actual_freq_khz);
+    err = flash_update_cycles(FLASH, KHZ_TO_MHZ(actual_freq_khz));
     if (err != SUCCESS)
         return err;
 
-    rcc_update_prescales(RCC, actual_freq_khz);
+    rcc_update_prescales(RCC, KHZ_TO_MHZ(actual_freq_khz));
 
     rcc_switch_sysclk_src(RCC, RCC_CFGR_CLK_PLL_P);
+#endif
 
     return SUCCESS;
 }
@@ -241,7 +249,7 @@ uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC)
     if (clk_src == RCC_CFGR_CLK_PLL_P) {
         pllp = (RCC->PLLCFGR & (0x3<<16))>>16;
 
-        return (MHZ_TO_KHZ(INCLK_MHZ)*plln) / (pllm*(2<<pllp));
+        return (MHZ_TO_KHZ(INCLK_MHZ)*plln) / (pllm*(2*(pllp+1)));
     }
 
     pllr = (RCC->PLLCFGR & (0x3<<28))>>28;
