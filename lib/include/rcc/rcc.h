@@ -5,6 +5,7 @@
 #include <common.h>
 #include <gpio/gpio.h>
 #include <uart/uart.h>
+#include <timer_basic/timer_basic.h>
 
 
 #define RCC_CFGR_CLK_HSI   ((0b00))
@@ -82,6 +83,8 @@ void rcc_set_apb2_prescale(prcc_t RCC, uint32_t prescale);
 void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
 
 void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num);
+
+void rcc_timer_basic_enable(prcc_t RCC, timer_basic_num_t num);
 
 uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC);
 

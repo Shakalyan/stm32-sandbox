@@ -300,3 +300,11 @@ void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num)
     __DSB();
     __ISB();
 }
+
+
+void rcc_timer_basic_enable(prcc_t RCC, timer_basic_num_t num)
+{
+    RCC->APB1ENR |= (1<<(4+num));
+    __DSB();
+    __ISB();
+}

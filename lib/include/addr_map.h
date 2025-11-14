@@ -21,5 +21,9 @@
 // FLASH
 #define FLASH_BASE ((0x40023C00))
 
+// TIMER BASIC
+#define TIMER_BASIC_6_BASE ((0x40001000))
+#define TIMER_BASIC_7_BASE ((0x40001400))
+
 #endif
 

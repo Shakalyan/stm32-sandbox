@@ -5,7 +5,7 @@
 #include <common.h>
 
 
-void uart_init(puart_t UART, uart_num_t uart_num)
+void uart_init(puart_t UART, uart_num_t uart_num) // TODO: UART1,3,4...
 {
     prcc_t RCC = (prcc_t)RCC_BASE;
     pgpio_t GPIO = (pgpio_t)GPIOA_BASE;

@@ -1,0 +1,4 @@
+config DRIVER_TIMER_BASIC
+    bool "Basic timer"
+    default n
+    select DRIVER_RCC

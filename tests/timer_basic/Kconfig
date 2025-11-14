@@ -1,0 +1,4 @@
+config TEST_TIMER_BASIC
+    bool "Basic timer test"
+    default n
+    select DRIVER_TIMER_BASIC
