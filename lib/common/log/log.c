@@ -9,8 +9,6 @@ puart_t UART2_LOG = (puart_t)UART2_BASE;
 void logger_init(void)
 {
     uart_init(UART2_LOG, UART2);
-    pr_info("Logger inited!\n");
-    pr_debug("Kek %x %s\n", 0xDEADBEEF, "huesos");
 }
 
 void _pr(char *fmt, ...)

@@ -1,5 +1,5 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef _LOGGER_H_
+#define _LOGGER_H_
 
 
 #include <uart/uart.h>
