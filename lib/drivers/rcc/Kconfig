@@ -1,4 +1,3 @@
 config DRIVER_RCC
     bool "RCC"
     default y
-    select DRIVER_FLASH

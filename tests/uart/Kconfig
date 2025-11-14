@@ -1,3 +1,4 @@
 config TEST_UART
     bool "UART"
     select DRIVER_UART
+    select COMMON_TEST_RUNNER
