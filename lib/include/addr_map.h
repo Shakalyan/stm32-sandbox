@@ -28,5 +28,11 @@
 // NVIC
 #define NVIC_BASE ((0xE000E000))
 
+// SPI
+#define SPI1_BASE ((0x40013000))
+#define SPI2_BASE ((0x40013800))
+#define SPI3_BASE ((0x40013C00))
+#define SPI4_BASE ((0x40013400))
+
 #endif
 

@@ -6,6 +6,7 @@
 #include <gpio/gpio.h>
 #include <uart/uart.h>
 #include <timer_basic/timer_basic.h>
+#include <spi/spi.h>
 
 
 #define RCC_CFGR_CLK_HSI   ((0b00))
@@ -84,6 +85,8 @@ void rcc_set_apb2_prescale(uint32_t prescale);
 void rcc_uart_enable(uart_num_t uart_num);
 
 void rcc_gpio_enable(gpio_port_t gpio_num);
+
+void rcc_spi_enable(spi_num_t spi_num);
 
 void rcc_timer_basic_enable(timer_basic_num_t num);
 

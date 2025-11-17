@@ -35,3 +35,21 @@ void gpio_set_port_af(pgpio_t GPIO, int pin, int value)
         GPIO->AFRH |= (value<<(4*pin));
     }
 }
+
+void gpio_set_port_output_type(pgpio_t GPIO, int pin, int type)
+{
+    GPIO->OTYPER &= ~(1<<pin);
+    GPIO->OTYPER |= (type<<pin);
+}
+
+void gpio_set_port_pupd(pgpio_t GPIO, int pin, int value)
+{
+    GPIO->PUPDR &= ~(0b11<<pin);
+    GPIO->PUPDR |= value<<pin;
+}
+
+void gpio_set_port_speed(pgpio_t GPIO, int pin, int value)
+{
+    GPIO->OSPEEDER &= ~(0b11<<pin);
+    GPIO->OSPEEDER |= value<<pin;
+}

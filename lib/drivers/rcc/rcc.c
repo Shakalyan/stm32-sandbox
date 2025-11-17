@@ -301,3 +301,24 @@ void rcc_timer_basic_enable(timer_basic_num_t num)
     __DSB();
     __ISB();
 }
+
+
+void rcc_spi_enable(spi_num_t spi_num)
+{
+    switch (spi_num) {
+        case SPI1:
+            RCC->APB2ENR |= (1<<12);
+            break;
+        case SPI2:
+            RCC->APB1ENR |= (1<<14);
+            break;
+        case SPI3:
+            RCC->APB1ENR |= (1<<15);
+            break;
+        case SPI4:
+            RCC->APB2ENR |= (1<<13);
+            break;
+    }
+    __DSB();
+    __ISB();
+}
