@@ -1,21 +1,36 @@
 #include <stdint.h>
+#include <nvic/nvic.h>
+#include <config.h>
 
-#define ISR_VECTOR_TABLE_SIZE ((16 + 96))
-#define STACK_TOP ((0x20000000U+0x4000U))
-
+#define STACK_TOP_ADDR ((0x20000000U+0x4000U))
 
 extern uint32_t _sdata, _edata, _sbss, _ebss, _etext;
-
-void reset_handler(void);
 void run_test(void);
 
-uint32_t isr_vector[ISR_VECTOR_TABLE_SIZE] __attribute__((section(".isr_vector"))) =
-{
-    STACK_TOP,
-    (uint32_t)&reset_handler
-};
 
-void reset_handler(void)
+#ifdef CONFIG_DRIVER_NVIC
+    isr_vector_table_t isr_vector_table __attribute__((section(".isr_vector"))) =
+    {
+        .STACK_TOP = STACK_TOP_ADDR,
+        .ISR_RESET = (uint32_t)isr_reset,
+        .ISR_TIM6_DAC = (uint32_t)isr_tim6_dac
+    };
+#else
+
+#define ISR_VECTOR_TABLE_SIZE ((16 + 96))
+    uint32_t isr_vector[ISR_VECTOR_TABLE_SIZE] __attribute__((section(".isr_vector"))) =
+    {
+        STACK_TOP_ADDR,
+        (uint32_t)isr_reset
+    };
+
+    void isr_default(void)
+    {
+        while (1);
+    }
+#endif
+
+void isr_reset(void)
 {
     uint32_t data_size = (uint32_t)&_edata - (uint32_t)&_sdata;
     uint8_t *flash_data = (uint8_t*)&_etext;

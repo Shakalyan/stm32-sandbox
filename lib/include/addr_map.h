@@ -25,5 +25,8 @@
 #define TIMER_BASIC_6_BASE ((0x40001000))
 #define TIMER_BASIC_7_BASE ((0x40001400))
 
+// NVIC
+#define NVIC_BASE ((0xE000E000))
+
 #endif
 
