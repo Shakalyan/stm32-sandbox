@@ -31,10 +31,14 @@ KCONFIGLIB_DIR = tools/kconfiglib
 
 CC = arm-none-eabi-gcc
 OBJDUMP = arm-none-eabi-objdump
+GDB = arm-none-eabi-gdb
 
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb
 CFLAGS += -nostdlib
+ifeq ($(DEBUG), yes)
+CFLAGS += -g
+endif
 
 INCLUDES += -Ilib/include
 
@@ -42,6 +46,7 @@ INCLUDES += -Ilib/include
 # TARGETS
 
 .DEFAULT_GOAL := build
+.PHONY: test clean build flash open-uart open-gdb menuconfig
 
 test:
 	@echo $(DRIVERS_SRC)
@@ -53,7 +58,7 @@ clean:
 	@rm $(BUILD_DIR)/*
 
 
-build: genheader
+build:
 	@$(CC) $(CFLAGS) $(TEST_SRC) $(DRIVERS_SRC) $(COMMON_SRC) $(BOOT_CODE) -T $(LINKER_SCRIPT) $(INCLUDES) -o $(BUILD_DIR)/$(ACTIVE_TEST).elf
 	@$(OBJDUMP) -D $(BUILD_DIR)/$(ACTIVE_TEST).elf > $(BUILD_DIR)/$(ACTIVE_TEST).dis
 
@@ -66,11 +71,19 @@ open-uart:
 
 
 open-gdb:
-	@openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+	make build DEBUG=yes
+	@sh -c '\
+		openocd -f interface/stlink.cfg -f target/stm32f4x.cfg & \
+		OC_PID=$$!; \
+		$(GDB) $(BUILD_DIR)/$(ACTIVE_TEST).elf -ex "target remote localhost:3333"; \
+		kill $$OC_PID; wait $$OC_PID \
+	'
 
 
 menuconfig:
 	@python3 $(KCONFIGLIB_DIR)/menuconfig.py
+	@python3 $(KCONFIGLIB_DIR)/genconfig.py
+	@mv config.h lib/include
 
 
 genheader:

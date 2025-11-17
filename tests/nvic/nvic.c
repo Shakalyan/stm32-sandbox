@@ -7,12 +7,16 @@
 
 void isr_tim6_dac(void)
 {
+    ptimer_basic_t TIM6 = (ptimer_basic_t)TIMER_BASIC_6_BASE;
+
+    TIM6->SR = 0;
     nvic_irq_clear_pending(IRQ_TIM6_DAC);
+    pr_info("ICPR addr: %x\n", &NVIC->ICPR);
     pr_info("TIM6 IRQ\n");
     for (int i = 0; i < 8; ++i) {
         pr_info("ISPR%u: %x\n", i, NVIC->ISPR[i]);
     }
-    while (1);
+    //while (1);
 }
 
 
@@ -28,7 +32,7 @@ void main(void)
     TIM6->DIER |= 1; // IRQ en
     nvic_irq_enable(IRQ_TIM6_DAC);
 
-    TIM6->CR1 |= (1<<0); // CEN
+    TIM6->CR1 |= (1<<3) | (1<<0); // OPM + CEN
 
     pr_info("No IRQ\n");
 

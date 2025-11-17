@@ -216,7 +216,7 @@ void nvic_irq_set_pending(IRQ_t irq);
 void nvic_irq_clear_pending(IRQ_t irq);
 
 
-#define IRQ_HANDLER_ATTRIBUTES __attribute__((weak))
+#define IRQ_HANDLER_ATTRIBUTES __attribute__((weak, interrupt("IRQ")))
 
 void isr_default(void);
 
