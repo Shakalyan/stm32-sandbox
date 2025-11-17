@@ -5,10 +5,9 @@
 
 void timer_basic_init(ptimer_basic_t TIMER, timer_basic_num_t num)
 {
-    prcc_t RCC = (prcc_t)RCC_BASE;
-    uint32_t apb1_freq_khz = rcc_get_apb1_freq_khz(RCC);
+    uint32_t apb1_freq_khz = rcc_get_apb1_freq_khz();
 
-    rcc_timer_basic_enable(RCC, num);
+    rcc_timer_basic_enable(num);
 
     TIMER->CR1 |= (1<<7); // ARPE
     TIMER->PSC = apb1_freq_khz-1;

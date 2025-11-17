@@ -1,13 +1,11 @@
 #include <gpio/gpio.h>
-#include <rcc/rcc_rmap.h>
 #include <rcc/rcc.h>
 #include <addr_map.h>
 
 
 void gpio_init(pgpio_t GPIO, gpio_port_t port)
 {
-    prcc_t RCC = (prcc_t)RCC_BASE;
-    rcc_gpio_enable(RCC, port);
+    rcc_gpio_enable(port);
 }
 
 void gpio_set_port_mode(pgpio_t GPIO, int pin, int mode)

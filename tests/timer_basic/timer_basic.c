@@ -9,8 +9,8 @@ void main(void)
     timer_basic_init(TIMER, TIMER_BASIC_6);
 
     while (1) {
-        mdelay(TIMER, 30000);
-        pr_info("30 seconds...\n");
+        mdelay(TIMER, 3000);
+        pr_info("3 seconds...\n");
     }
 
 }

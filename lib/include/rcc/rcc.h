@@ -62,35 +62,36 @@ typedef volatile struct rcc
     uint32_t DCKCFGR2;
 } rcc_t;
 typedef volatile rcc_t* prcc_t;
+extern prcc_t RCC;
 
 
-int rcc_init(prcc_t RCC);
+int rcc_init();
 
-int rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz, uint32_t *actual_freq_khz);
+int rcc_set_pll_freq(uint32_t desired_freq_khz, uint32_t *actual_freq_khz);
 
-void rcc_switch_sysclk_src(prcc_t RCC, uint32_t src);
+void rcc_switch_sysclk_src(uint32_t src);
 
-void rcc_turn_on_clk(prcc_t RCC, uint32_t clk);
+void rcc_turn_on_clk(uint32_t clk);
 
-void rcc_turn_off_clk(prcc_t RCC, uint32_t clk);
+void rcc_turn_off_clk(uint32_t clk);
 
-void rcc_update_prescales(prcc_t RCC, uint32_t new_freq_mhz);
+void rcc_update_prescales(uint32_t new_freq_mhz);
 
-void rcc_set_apb1_prescale(prcc_t RCC, uint32_t prescale);
+void rcc_set_apb1_prescale(uint32_t prescale);
 
-void rcc_set_apb2_prescale(prcc_t RCC, uint32_t prescale);
+void rcc_set_apb2_prescale(uint32_t prescale);
 
-void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num);
+void rcc_uart_enable(uart_num_t uart_num);
 
-void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num);
+void rcc_gpio_enable(gpio_port_t gpio_num);
 
-void rcc_timer_basic_enable(prcc_t RCC, timer_basic_num_t num);
+void rcc_timer_basic_enable(timer_basic_num_t num);
 
-uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC);
+uint32_t rcc_get_sysclk_freq_khz();
 
-uint32_t rcc_get_apb1_freq_khz(prcc_t RCC);
+uint32_t rcc_get_apb1_freq_khz();
 
-uint32_t rcc_get_apb2_freq_khz(prcc_t RCC);
+uint32_t rcc_get_apb2_freq_khz();
 
 
 #endif

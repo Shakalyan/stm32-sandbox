@@ -1,9 +1,11 @@
 #include <rcc/rcc.h>
-#include <rcc/rcc_rmap.h>
 #include <common.h>
 #include <errors.h>
 #include <flash/flash.h>
 #include <addr_map.h>
+
+
+prcc_t RCC = (prcc_t)RCC_BASE;
 
 
 static uint32_t abs(uint32_t x)
@@ -21,7 +23,7 @@ static int get_clk_src_base_bit(uint32_t clk)
 }
 
 
-void rcc_turn_on_clk(prcc_t RCC, uint32_t clk)
+void rcc_turn_on_clk(uint32_t clk)
 {
     int base_bit = get_clk_src_base_bit(clk);
 
@@ -30,7 +32,7 @@ void rcc_turn_on_clk(prcc_t RCC, uint32_t clk)
     while (!(RCC->CR & (1<<(base_bit+1))));
 }
 
-void rcc_turn_off_clk(prcc_t RCC, uint32_t clk)
+void rcc_turn_off_clk(uint32_t clk)
 {
     int base_bit = get_clk_src_base_bit(clk);
 
@@ -40,11 +42,11 @@ void rcc_turn_off_clk(prcc_t RCC, uint32_t clk)
 }
 
 
-void rcc_switch_sysclk_src(prcc_t RCC, uint32_t src)
+void rcc_switch_sysclk_src(uint32_t src)
 {
     uint32_t cfgr;
 
-    rcc_turn_on_clk(RCC, src);
+    rcc_turn_on_clk(src);
 
     cfgr = RCC->CFGR;
     cfgr &= ~0b11;
@@ -82,7 +84,7 @@ static uint32_t get_best_freq(uint32_t desired_freq_khz, uint32_t vco_in, uint32
 
 
 // TODO: PLLQ, PLLR, HSE IN
-int rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz, uint32_t *actual_freq_khz)
+int rcc_set_pll_freq(uint32_t desired_freq_khz, uint32_t *actual_freq_khz)
 {
     uint32_t inclk_khz = MHZ_TO_KHZ(INCLK_MHZ);
     uint32_t curr_freq_khz;
@@ -137,7 +139,7 @@ int rcc_set_pll_freq(prcc_t RCC, uint32_t desired_freq_khz, uint32_t *actual_fre
 }
 
 
-void rcc_set_apb1_prescale(prcc_t RCC, uint32_t prescale)
+void rcc_set_apb1_prescale(uint32_t prescale)
 {
     uint32_t cfgr;
 
@@ -152,7 +154,7 @@ void rcc_set_apb1_prescale(prcc_t RCC, uint32_t prescale)
 }
 
 
-void rcc_set_apb2_prescale(prcc_t RCC, uint32_t prescale)
+void rcc_set_apb2_prescale(uint32_t prescale)
 {
     uint32_t cfgr;
 
@@ -167,12 +169,12 @@ void rcc_set_apb2_prescale(prcc_t RCC, uint32_t prescale)
 }
 
 
-void rcc_update_prescales(prcc_t RCC, uint32_t new_freq_mhz)
+void rcc_update_prescales(uint32_t new_freq_mhz)
 {
     uint32_t prescale, i;
 
     if (new_freq_mhz <= 45) {
-        rcc_set_apb1_prescale(RCC, RCC_CFGR_APB_PRESCALE_1);
+        rcc_set_apb1_prescale(RCC_CFGR_APB_PRESCALE_1);
     }
     else {
         for (i = 0; i < 4; ++i) {
@@ -180,11 +182,11 @@ void rcc_update_prescales(prcc_t RCC, uint32_t new_freq_mhz)
             if (new_freq_mhz / prescale <= 45)
                 break;
         }
-        rcc_set_apb1_prescale(RCC, 0b100|i);
+        rcc_set_apb1_prescale(0b100|i);
     }
 
     if (new_freq_mhz <= 90) {
-        rcc_set_apb2_prescale(RCC, RCC_CFGR_APB_PRESCALE_1);
+        rcc_set_apb2_prescale(RCC_CFGR_APB_PRESCALE_1);
     }
     else {
         for (i = 0; i < 4; ++i) {
@@ -192,21 +194,21 @@ void rcc_update_prescales(prcc_t RCC, uint32_t new_freq_mhz)
             if (new_freq_mhz / prescale <= 90)
                 break;
         }
-        rcc_set_apb2_prescale(RCC, 0b100|i);
+        rcc_set_apb2_prescale(0b100|i);
     }
 }
 
 
-int rcc_init(prcc_t RCC)
+int rcc_init()
 {
     uint32_t actual_freq_khz;
     int err;
 
 #ifdef CONFIG_PLL_ON
-    rcc_switch_sysclk_src(RCC, RCC_CFGR_CLK_HSI);
-    rcc_turn_off_clk(RCC, RCC_CFGR_CLK_PLL_P);
+    rcc_switch_sysclk_src(RCC_CFGR_CLK_HSI);
+    rcc_turn_off_clk(RCC_CFGR_CLK_PLL_P);
 
-    err = rcc_set_pll_freq(RCC, MHZ_TO_KHZ(SYSCLK_MHZ), &actual_freq_khz);
+    err = rcc_set_pll_freq(MHZ_TO_KHZ(SYSCLK_MHZ), &actual_freq_khz);
     if (err != SUCCESS) {
         return err;
     }
@@ -215,16 +217,16 @@ int rcc_init(prcc_t RCC)
     if (err != SUCCESS)
         return err;
 
-    rcc_update_prescales(RCC, KHZ_TO_MHZ(actual_freq_khz));
+    rcc_update_prescales(KHZ_TO_MHZ(actual_freq_khz));
 
-    rcc_switch_sysclk_src(RCC, RCC_CFGR_CLK_PLL_P);
+    rcc_switch_sysclk_src(RCC_CFGR_CLK_PLL_P);
 #endif
 
     return SUCCESS;
 }
 
 
-uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC)
+uint32_t rcc_get_sysclk_freq_khz()
 {
     uint32_t plln, pllm, pllp, pllr;
     uint32_t clk_src = (RCC->CFGR & 0b11<<2)>>2;
@@ -248,9 +250,9 @@ uint32_t rcc_get_sysclk_freq_khz(prcc_t RCC)
 }
 
 
-uint32_t rcc_get_apb1_freq_khz(prcc_t RCC)
+uint32_t rcc_get_apb1_freq_khz()
 {
-    uint32_t sysclk_freq = rcc_get_sysclk_freq_khz(RCC);
+    uint32_t sysclk_freq = rcc_get_sysclk_freq_khz();
     uint32_t ppre1 = (RCC->CFGR & (0b111<<10))>>10;
     if ((ppre1 & 0b100) == 0)
         return sysclk_freq;
@@ -258,9 +260,9 @@ uint32_t rcc_get_apb1_freq_khz(prcc_t RCC)
 }
 
 
-uint32_t rcc_get_apb2_freq_khz(prcc_t RCC)
+uint32_t rcc_get_apb2_freq_khz()
 {
-    uint32_t sysclk_freq = rcc_get_sysclk_freq_khz(RCC);
+    uint32_t sysclk_freq = rcc_get_sysclk_freq_khz();
     uint32_t ppre2 = (RCC->CFGR & (0b111<<13))>>13;
     if ((ppre2 & 0b100) == 0)
         return sysclk_freq;
@@ -268,7 +270,7 @@ uint32_t rcc_get_apb2_freq_khz(prcc_t RCC)
 }
 
 
-void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num)
+void rcc_uart_enable(uart_num_t uart_num)
 {
     if (uart_num == 1) {
         RCC->APB2ENR |= 1<<4;
@@ -285,7 +287,7 @@ void rcc_uart_enable(prcc_t RCC, uart_num_t uart_num)
 }
 
 
-void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num)
+void rcc_gpio_enable(gpio_port_t gpio_num)
 {
     RCC->AHB1ENR |= 1<<gpio_num;
     __DSB();
@@ -293,7 +295,7 @@ void rcc_gpio_enable(prcc_t RCC, gpio_port_t gpio_num)
 }
 
 
-void rcc_timer_basic_enable(prcc_t RCC, timer_basic_num_t num)
+void rcc_timer_basic_enable(timer_basic_num_t num)
 {
     RCC->APB1ENR |= (1<<(4+num));
     __DSB();

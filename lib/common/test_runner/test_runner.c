@@ -12,9 +12,8 @@ void run_test(void)
 {
 
 #ifdef CONFIG_COMMON_TEST_RUNNER
-    prcc_t RCC = (prcc_t)RCC_BASE;
     int err;
-    err = rcc_init(RCC);
+    err = rcc_init();
 
 #ifdef CONFIG_COMMON_LOGGER
     logger_init();
@@ -26,9 +25,9 @@ void run_test(void)
         pr_info("RCC init failed: %u\n", err);
     }
     pr_info("Desired SYSCLK frequency: %uKHz\n", MHZ_TO_KHZ(SYSCLK_MHZ));
-    pr_info("Actual  SYSCLK frequency: %uKHz\n", rcc_get_sysclk_freq_khz(RCC));
-    pr_info("APB1 frequency:           %uKHz\n", rcc_get_apb1_freq_khz(RCC));
-    pr_info("APB2 frequency:           %uKHz\n", rcc_get_apb2_freq_khz(RCC));
+    pr_info("Actual  SYSCLK frequency: %uKHz\n", rcc_get_sysclk_freq_khz());
+    pr_info("APB1 frequency:           %uKHz\n", rcc_get_apb1_freq_khz());
+    pr_info("APB2 frequency:           %uKHz\n", rcc_get_apb2_freq_khz());
     pr_info("============================\n\n")
 
 #endif
