@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <errors.h>
 #include <common.h>
+#include <addr_map.h>
+
+
+pflash_t FLASH = (pflash_t)FLASH_BASE;
 
 
 static uint32_t get_ws(int sysclk_mhz, int step)
@@ -14,7 +18,7 @@ static uint32_t get_ws(int sysclk_mhz, int step)
 }
 
 
-static void update_cycles(pflash_t FLASH, int sysclk_mhz, int step)
+static void update_cycles(int sysclk_mhz, int step)
 {
     uint32_t ws = get_ws(sysclk_mhz, step);
     uint32_t acr = FLASH->ACR;
@@ -29,7 +33,7 @@ static void update_cycles(pflash_t FLASH, int sysclk_mhz, int step)
 }
 
 
-int flash_update_cycles(pflash_t FLASH, int new_sysclk_mhz)
+int flash_update_cycles(int new_sysclk_mhz)
 {
     uint32_t ws = 0;
 
@@ -37,7 +41,7 @@ int flash_update_cycles(pflash_t FLASH, int new_sysclk_mhz)
         return SYSCLK_FREQ_NOT_SUPPORTED;
 
 #ifdef CONFIG_VOLTAGE_3_3V
-    update_cycles(FLASH, new_sysclk_mhz, 30);
+    update_cycles(new_sysclk_mhz, 30);
     return SUCCESS;
 #endif
 

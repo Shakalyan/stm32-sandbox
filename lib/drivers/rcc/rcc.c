@@ -199,16 +199,7 @@ void rcc_update_prescales(prcc_t RCC, uint32_t new_freq_mhz)
 
 int rcc_init(prcc_t RCC)
 {
-    /*
-        PLL off
-        FLASH cycles
-        Prescalers
-        PLL setup
-
-    */
-
     uint32_t actual_freq_khz;
-    pflash_t FLASH = (pflash_t)FLASH_BASE;
     int err;
 
 #ifdef CONFIG_PLL_ON
@@ -220,7 +211,7 @@ int rcc_init(prcc_t RCC)
         return err;
     }
 
-    err = flash_update_cycles(FLASH, KHZ_TO_MHZ(actual_freq_khz));
+    err = flash_update_cycles(KHZ_TO_MHZ(actual_freq_khz));
     if (err != SUCCESS)
         return err;
 
