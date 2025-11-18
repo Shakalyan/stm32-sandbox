@@ -27,5 +27,11 @@ typedef enum spi_num {
 
 void spi_init(pspi_t SPI, spi_num_t num);
 
+uint8_t spi_txrx(pspi_t SPI, uint8_t byte);
+
+void spi_rxb_clear(pspi_t SPI);
+
+void spi_txb_await_empty(pspi_t SPI);
+
 
 #endif

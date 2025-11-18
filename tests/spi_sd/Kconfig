@@ -1,0 +1,4 @@
+config TEST_SPI_SD
+    bool "SPI SD-card test"
+    default n
+    select DRIVER_SPI

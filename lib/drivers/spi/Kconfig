@@ -1,0 +1,5 @@
+config DRIVER_SPI
+    bool "SPI"
+    default n
+    select DRIVER_RCC
+    select DRIVER_GPIO
