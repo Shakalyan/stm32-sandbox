@@ -3,12 +3,10 @@
 #include <common/log/log.h>
 #include <gpio/gpio.h>
 #include <common.h>
-#include <timer_basic/timer_basic.h>
-
+#include <common/timer/timer.h>
 
 pspi_t SPI = (pspi_t)SPI1_BASE;
 gpio_t cs;
-ptimer_basic_t TIMER = (ptimer_basic_t)TIMER_BASIC_6_BASE;
 
 
 static void sd_to_idle(void)
@@ -18,7 +16,7 @@ static void sd_to_idle(void)
     gpio_raise(&cs);
     __DSB();
     __ISB();
-    mdelay(TIMER, 10);
+    mdelay(10);
     for (i = 0; i < 50; ++i) {
         spi_txrx(SPI, 0xFF);
     }
@@ -59,7 +57,7 @@ static void sd_cs_down()
     gpio_lower(&cs);
     __DSB();
     __ISB();
-    mdelay(TIMER, 10);
+    mdelay(10);
 }
 
 static void sd_cs_up()
@@ -67,7 +65,7 @@ static void sd_cs_up()
     gpio_raise(&cs);
     __DSB();
     __ISB();
-    mdelay(TIMER, 10);
+    mdelay(10);
     spi_txrx(SPI, 0xFF);
 }
 
@@ -119,12 +117,10 @@ void main(void)
     gpio_init(&cs, GPIOB, 6);
     gpio_set_mode(&cs, GPIO_MODE_OUTPUT);
 
-    timer_basic_init(TIMER, TIMER_BASIC_6);
-
     spi_init(SPI, SPI1);
     pr_info("SPI init ok\n");
 
-    mdelay(TIMER, 100);
+    mdelay(100);
     sd_to_idle();
 
 

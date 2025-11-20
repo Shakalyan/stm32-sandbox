@@ -3,3 +3,4 @@ config TEST_TIMER_BASIC
     default n
     select DRIVER_TIMER_BASIC
     select COMMON_TEST_RUNNER
+    select COMMON_TIMER

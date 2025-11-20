@@ -1,5 +1,6 @@
 #include <common/test_runner/test_runner.h>
 #include <common/log/log.h>
+#include <common/timer/timer.h>
 #include <rcc/rcc.h>
 #include <addr_map.h>
 #include <config.h>
@@ -30,6 +31,10 @@ void run_test(void)
     pr_info("APB2 frequency:           %uKHz\n", rcc_get_apb2_freq_khz());
     pr_info("============================\n\n")
 
+#endif
+
+#ifdef CONFIG_COMMON_TIMER
+    timer_init();
 #endif
 
 #endif

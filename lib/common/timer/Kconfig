@@ -1,0 +1,4 @@
+config COMMON_TIMER
+    bool "Enable TIM6 for delays"
+    default y
+    select DRIVER_TIMER_BASIC

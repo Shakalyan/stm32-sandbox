@@ -21,7 +21,9 @@ UART_BAUD_RATE = $(shell grep -E "^CONFIG_UART_BAUD_RATE" .config | cut -d= -f2)
 
 # COMMON
 COMMON_DIR = lib/common
-COMMON_SRC = $(COMMON_DIR)/test_runner/test_runner.c $(COMMON_DIR)/log/log.c
+COMMON_SRC = $(COMMON_DIR)/test_runner/test_runner.c \
+			 $(COMMON_DIR)/log/log.c \
+			 $(COMMON_DIR)/timer/timer.c
 
 
 # BUILD

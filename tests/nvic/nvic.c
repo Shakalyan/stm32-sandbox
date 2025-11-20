@@ -7,7 +7,7 @@
 
 void isr_tim6_dac(void)
 {
-    ptimer_basic_t TIM6 = (ptimer_basic_t)TIMER_BASIC_6_BASE;
+    ptimer_basic_regs_t TIM6 = (ptimer_basic_regs_t)TIMER_BASIC_6_BASE;
 
     TIM6->SR = 0;
     nvic_irq_clear_pending(IRQ_TIM6_DAC);
@@ -22,17 +22,16 @@ void isr_tim6_dac(void)
 
 void main(void)
 {
-
-    ptimer_basic_t TIM6 = (ptimer_basic_t)TIMER_BASIC_6_BASE;
-    timer_basic_init(TIM6, TIMER_BASIC_6);
+    timer_basic_t timer;
+    timer_basic_init(&timer, TIMER_BASIC_6);
 
     pr_info("NVIC test\n");
     pr_info("Last IRQ num: %d\n", IRQ_FMPI2C1_ERR);
 
-    TIM6->DIER |= 1; // IRQ en
+    timer.regs->DIER |= 1; // IRQ en
     nvic_irq_enable(IRQ_TIM6_DAC);
 
-    TIM6->CR1 |= (1<<3) | (1<<0); // OPM + CEN
+    timer.regs->CR1 |= (1<<3) | (1<<0); // OPM + CEN
 
     pr_info("No IRQ\n");
 

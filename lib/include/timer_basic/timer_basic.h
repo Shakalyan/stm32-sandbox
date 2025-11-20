@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-typedef volatile struct timer_basic {
+typedef volatile struct timer_basic_regs {
     uint32_t CR1;
     uint32_t CR2;
     uint32_t _reserved0x08;
@@ -15,18 +15,21 @@ typedef volatile struct timer_basic {
     uint32_t CNT;
     uint32_t PSC;
     uint32_t ARR;
-} timer_basic_t;
-typedef volatile timer_basic_t* ptimer_basic_t;
+} timer_basic_regs_t;
+typedef volatile timer_basic_regs_t* ptimer_basic_regs_t;
 
 typedef enum timer_basic_num {
     TIMER_BASIC_6 = 0,
     TIMER_BASIC_7
 } timer_basic_num_t;
 
+typedef struct timer_basic {
+    ptimer_basic_regs_t regs;
+    timer_basic_num_t num;
+} timer_basic_t;
 
-void timer_basic_init(ptimer_basic_t TIMER, timer_basic_num_t num);
 
-void mdelay(ptimer_basic_t TIMER, int ms);
+void timer_basic_init(timer_basic_t *timer, timer_basic_num_t num);
 
 
 #endif
