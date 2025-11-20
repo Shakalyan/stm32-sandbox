@@ -12,20 +12,28 @@ void gpio_init(gpio_t *gpio, gpio_port_t port, int pin)
     switch (port) {
         case GPIOA:
             addr = GPIOA_BASE;
+            break;
         case GPIOB:
             addr = GPIOB_BASE;
+            break;
         case GPIOC:
             addr = GPIOC_BASE;
+            break;
         case GPIOD:
             addr = GPIOD_BASE;
+            break;
         case GPIOE:
             addr = GPIOE_BASE;
+            break;
         case GPIOF:
             addr = GPIOF_BASE;
+            break;
         case GPIOG:
             addr = GPIOG_BASE;
+            break;
         case GPIOH:
             addr = GPIOH_BASE;
+            break;
     }
 
     gpio->regs = (pgpio_regs_t)addr;

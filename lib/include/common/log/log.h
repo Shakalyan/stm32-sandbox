@@ -12,11 +12,14 @@
 #define LOG_LEVEL_INFO  ((4))
 #define LOG_LEVEL_DEBUG ((5))
 
-
+#ifdef CONFIG_COMMON_LOGGER
 #define pr(level, fmt, ...) {{      \
     if (level <= CONFIG_LOG_LEVEL)  \
         _pr(fmt, ##__VA_ARGS__);    \
 }}
+#else
+#define pr(level, fmt, ...)
+#endif
 
 
 #define pr_fatal(fmt, ...) pr(LOG_LEVEL_FATAL, fmt, ##__VA_ARGS__)
