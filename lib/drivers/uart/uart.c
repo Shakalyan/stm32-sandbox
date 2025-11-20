@@ -7,7 +7,7 @@
 
 void uart_init(puart_t UART, uart_num_t uart_num) // TODO: UART1,3,4...
 {
-    pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
+    gpio_t tx, rx;
     uint32_t mant = 0, frac = 0;
     uint32_t sysclk = rcc_get_apb1_freq_khz();
     uint32_t div = (8*(2-UART_OVER8)*CONFIG_UART_BAUD_RATE)/1000;
@@ -15,11 +15,12 @@ void uart_init(puart_t UART, uart_num_t uart_num) // TODO: UART1,3,4...
 
     rcc_uart_enable(uart_num);
 
-    gpio_init(GPIO, GPIOA);
-    gpio_set_port_mode(GPIO, 2, GPIO_PORT_MODE_AF);
-    gpio_set_port_mode(GPIO, 3, GPIO_PORT_MODE_AF);
-    gpio_set_port_af(GPIO, 2, 7);
-    gpio_set_port_af(GPIO, 3, 7);
+    gpio_init(&tx, GPIOA, 2);
+    gpio_init(&rx, GPIOA, 3);
+    gpio_set_mode(&tx, GPIO_MODE_AF);
+    gpio_set_mode(&rx, GPIO_MODE_AF);
+    gpio_set_af(&tx, 7);
+    gpio_set_af(&rx, 7);
 
     mant = sysclk / div;
 

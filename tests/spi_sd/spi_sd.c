@@ -7,7 +7,7 @@
 
 
 pspi_t SPI = (pspi_t)SPI1_BASE;
-pgpio_t GPIO = (pgpio_t)GPIOB_BASE;
+gpio_t cs;
 ptimer_basic_t TIMER = (ptimer_basic_t)TIMER_BASIC_6_BASE;
 
 
@@ -15,7 +15,7 @@ static void sd_to_idle(void)
 {
     int i = 0;
 
-    gpio_set_pin(GPIO, 6);
+    gpio_raise(&cs);
     __DSB();
     __ISB();
     mdelay(TIMER, 10);
@@ -28,7 +28,7 @@ static void sd_to_idle(void)
 // static void sd_send_cmd8(void)
 // {
 //     // send CMD0
-//     gpio_unset_pin(GPIO, 6);
+//     gpio_lower(GPIO, 6);
 //     __DSB();
 //     __ISB();
 //     mdelay(TIMER, 10);
@@ -56,7 +56,7 @@ void clear_print_read_buffer()
 
 static void sd_cs_down()
 {
-    gpio_unset_pin(GPIO, 6);
+    gpio_lower(&cs);
     __DSB();
     __ISB();
     mdelay(TIMER, 10);
@@ -64,7 +64,7 @@ static void sd_cs_down()
 
 static void sd_cs_up()
 {
-    gpio_set_pin(GPIO, 6);
+    gpio_raise(&cs);
     __DSB();
     __ISB();
     mdelay(TIMER, 10);
@@ -116,8 +116,8 @@ static int sd_send_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, uint32_t *r)
 void main(void)
 {
     pr_info("Start SPI SD test\n");
-    gpio_init(GPIO, GPIOB);
-    gpio_set_port_mode(GPIO, 6, GPIO_PORT_MODE_OUTPUT);
+    gpio_init(&cs, GPIOB, 6);
+    gpio_set_mode(&cs, GPIO_MODE_OUTPUT);
 
     timer_basic_init(TIMER, TIMER_BASIC_6);
 

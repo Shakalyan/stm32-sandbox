@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef volatile struct gpio
+typedef volatile struct gpio_regs
 {
     uint32_t MODER;
     uint32_t OTYPER;
@@ -15,8 +15,8 @@ typedef volatile struct gpio
     uint32_t LCKR;
     uint32_t AFRL;
     uint32_t AFRH;
-} gpio_t;
-typedef volatile gpio_t* pgpio_t;
+} gpio_regs_t;
+typedef volatile gpio_regs_t* pgpio_regs_t;
 
 typedef enum gpio_port {
     GPIOA = 0,
@@ -29,38 +29,55 @@ typedef enum gpio_port {
     GPIOH
 } gpio_port_t;
 
-#define GPIO_PORT_MODE_INPUT  ((0b00))
-#define GPIO_PORT_MODE_OUTPUT ((0b01))
-#define GPIO_PORT_MODE_AF     ((0b10))
-#define GPIO_PORT_MODE_ANALOG ((0b11))
+typedef struct gpio {
+    pgpio_regs_t regs;
+    gpio_port_t port;
+    int pin;
+} gpio_t;
 
-#define GPIO_PORT_OUTPUT_TYPE_PP ((0))
-#define GPIO_PORT_OUTPUT_TYPE_OD ((1))
 
-#define GPIO_PORT_PUPDR_NO ((0b00))
-#define GPIO_PORT_PUPDR_PU ((0b01))
-#define GPIO_PORT_PUPDR_PD ((0b10))
+// Regs values
 
-#define GPIO_PORT_SPEED_LOW    ((0b00))
-#define GPIO_PORT_SPEED_MEDIUM ((0b01))
-#define GPIO_PORT_SPEED_FAST   ((0b10))
-#define GPIO_PORT_SPEED_HIGH   ((0b11))
+typedef enum gpio_mode {
+    GPIO_MODE_INPUT = 0,
+    GPIO_MODE_OUTPUT,
+    GPIO_MODE_AF,
+    GPIO_MODE_ANALOG
+} gpio_mode_t;
 
-void gpio_init(pgpio_t GPIO, gpio_port_t port);
+typedef enum gpio_output_type {
+    GPIO_OUTPUT_TYPE_PUSH_PULL = 0,
+    GPIO_OUTPUT_TYPE_OPEN_DRAIN
+} gpio_output_type_t;
 
-void gpio_set_port_mode(pgpio_t GPIO, int pin, int mode);
+typedef enum gpio_pupd {
+    GPIO_PUPDR_NO = 0,
+    GPIO_PUPDR_PU,
+    GPIO_PUPDR_PD
+} gpio_pupd_t;
 
-void gpio_set_pin(pgpio_t GPIO, int pin);
+typedef enum gpio_speed {
+    GPIO_SPEED_LOW = 0,
+    GPIO_SPEED_MEDIUM,
+    GPIO_SPEED_FAST,
+    GPIO_SPEED_HIGH
+} gpio_speed_t;
 
-void gpio_unset_pin(pgpio_t GPIO, int pin);
+void gpio_init(gpio_t *gpio, gpio_port_t port, int pin);
 
-void gpio_set_port_af(pgpio_t GPIO, int pin, int value);
+void gpio_set_mode(gpio_t *gpio, gpio_mode_t mode);
 
-void gpio_set_port_output_type(pgpio_t GPIO, int pin, int type);
+void gpio_raise(gpio_t *gpio);
 
-void gpio_set_port_pupd(pgpio_t GPIO, int pin, int value);
+void gpio_lower(gpio_t *gpio);
 
-void gpio_set_port_speed(pgpio_t GPIO, int pin, int value);
+void gpio_set_af(gpio_t *gpio, int value);
+
+void gpio_set_output_type(gpio_t *gpio, gpio_output_type_t type);
+
+void gpio_set_pupd(gpio_t *gpio, gpio_pupd_t value);
+
+void gpio_set_speed(gpio_t *gpio, gpio_speed_t speed);
 
 
 #endif

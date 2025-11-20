@@ -2,16 +2,14 @@
 #include <gpio/gpio.h>
 #include <addr_map.h>
 
-#define LED ((6))
-
 void main(void)
 {
-    pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
-    gpio_init(GPIO, GPIOA);
+    gpio_t gpio;
+    gpio_init(&gpio, GPIOA, 6);
 
-    gpio_set_port_mode(GPIO, LED, GPIO_PORT_MODE_OUTPUT);
+    gpio_set_mode(&gpio, GPIO_MODE_OUTPUT);
 
-    gpio_set_pin(GPIO, LED);
+    gpio_raise(&gpio);
 
     while (1) {}
 

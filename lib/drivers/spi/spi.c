@@ -9,21 +9,23 @@ void spi_init(pspi_t SPI, spi_num_t num)
 {
     rcc_spi_enable(num);
 
-    pgpio_t GPIO = (pgpio_t)GPIOA_BASE;
+    gpio_t sck, miso, mosi;
 
-    gpio_init(GPIO, GPIOA);
+    gpio_init(&sck, GPIOA, 5);
+    gpio_init(&miso, GPIOA, 6);
+    gpio_init(&mosi, GPIOA, 7);
 
-    gpio_set_port_mode(GPIO, 5, GPIO_PORT_MODE_AF);
-    gpio_set_port_mode(GPIO, 6, GPIO_PORT_MODE_AF);
-    gpio_set_port_mode(GPIO, 7, GPIO_PORT_MODE_AF);
+    gpio_set_mode(&sck, GPIO_MODE_AF);
+    gpio_set_mode(&miso, GPIO_MODE_AF);
+    gpio_set_mode(&mosi, GPIO_MODE_AF);
 
-    gpio_set_port_af(GPIO, 5, 5); // SCK
-    gpio_set_port_af(GPIO, 6, 5); // MISO
-    gpio_set_port_af(GPIO, 7, 5); // MOSI
+    gpio_set_af(&sck, 5);
+    gpio_set_af(&miso, 5);
+    gpio_set_af(&mosi, 5);
 
-    gpio_set_port_pupd(GPIO, 5, GPIO_PORT_PUPDR_NO);
-    gpio_set_port_pupd(GPIO, 6, GPIO_PORT_PUPDR_PU);
-    gpio_set_port_pupd(GPIO, 7, GPIO_PORT_PUPDR_NO);
+    gpio_set_pupd(&sck, GPIO_PUPDR_NO);
+    gpio_set_pupd(&miso, GPIO_PUPDR_PU);
+    gpio_set_pupd(&mosi, GPIO_PUPDR_NO);
 
     SPI->CR1 |= (1<<9) | (1<<8) | (0b111<<3) | (1<<2); // BRR f/128, SSM, SSI=1, MSTR
     SPI->CR1 |= (1<<6); // SPI enable

@@ -5,6 +5,12 @@
 #include <config.h>
 
 #define BIT(x) ((1<<x))
+#define SET_REG(reg, value, mask, offset) \
+    do {                                  \
+        reg &= ~(mask << offset);         \
+        reg |= (value << offset);         \
+    } while (0)
+
 #define MHZ_TO_KHZ(f) ((f*1000))
 #define KHZ_TO_MHZ(f) ((f/1000))
 
