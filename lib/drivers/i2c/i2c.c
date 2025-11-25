@@ -55,8 +55,6 @@ int i2c_start(i2c_t *i2c, uint8_t addr)
 {
     uint32_t dummy, delay;
 
-    addr &= ~(1); // Transmitter mode
-
     if (i2c->regs->SR2 & I2C_SR2_BUSY) {
         pr_debug("I2C bus is busy\n");
         return -I2C_BUSY;
@@ -66,6 +64,7 @@ int i2c_start(i2c_t *i2c, uint8_t addr)
 
     while (!(i2c->regs->SR1 & I2C_SR1_SB));
 
+    addr &= ~(1); // Transmitter mode
     i2c->regs->DR = addr;
 
     while (!(i2c->regs->SR1 & I2C_SR1_ADDR));
