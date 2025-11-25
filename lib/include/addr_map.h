@@ -34,5 +34,10 @@
 #define SPI3_BASE ((0x40013C00))
 #define SPI4_BASE ((0x40013400))
 
+// I2C
+#define I2C1_BASE ((0x40005400))
+#define I2C2_BASE ((0x40005800))
+#define I2C3_BASE ((0x40005C00))
+
 #endif
 

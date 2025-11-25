@@ -4,11 +4,21 @@
 
 #include <config.h>
 
-#define BIT(x) ((1<<x))
-#define SET_REG(reg, value, mask, offset) \
-    do {                                  \
-        reg &= ~(mask << offset);         \
-        reg |= (value << offset);         \
+#define BIT(x) ((1<<(x)))
+#define SET_REG(reg, value, mask, offset)     \
+    do {                                      \
+        reg &= ~((mask) << (offset));         \
+        reg |= ((value) << (offset));         \
+    } while (0)
+
+#define SET_BIT(reg, bit) \
+    do {                  \
+        reg |= (bit);     \
+    } while (0)
+
+#define CLR_BIT(reg, bit)  \
+    do {                   \
+        reg &= ~(bit);     \
     } while (0)
 
 #define MHZ_TO_KHZ(f) ((f*1000))
