@@ -24,10 +24,11 @@ void spi_init(pspi_t SPI, spi_num_t num)
     gpio_set_af(&mosi, 5);
 
     gpio_set_pupd(&sck, GPIO_PUPDR_NO);
-    gpio_set_pupd(&miso, GPIO_PUPDR_PU);
+    //gpio_set_pupd(&miso, GPIO_PUPDR_PU);
+    gpio_set_pupd(&miso, GPIO_PUPDR_NO);
     gpio_set_pupd(&mosi, GPIO_PUPDR_NO);
 
-    SPI->CR1 |= (1<<9) | (1<<8) | (0b111<<3) | (1<<2); // BRR f/128, SSM, SSI=1, MSTR
+    SPI->CR1 |= (1<<9) | (1<<8) | (0b111<<3) | (1<<2); // BRR f/256, SSM, SSI=1, MSTR
     SPI->CR1 |= (1<<6); // SPI enable
     __DSB();
     __ISB();

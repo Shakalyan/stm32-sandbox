@@ -13,6 +13,8 @@ static void sd_to_idle(void)
 {
     int i = 0;
 
+    spi_txrx(SPI, 0xFF);
+    mdelay(10);
     gpio_raise(&cs);
     __DSB();
     __ISB();
@@ -97,12 +99,12 @@ static int sd_send_cmd(uint8_t cmd, uint32_t arg, uint8_t crc, uint32_t *r)
         *r = spi_txrx(SPI, 0xFF);
         //pr_info("r = %x\n", *r);
         if (*r != 0xFF) {
-            pr_info("r =  %x\n", *r);
+            //pr_info("r =  %x\n", *r);
             return 0;
         }
     }
 
-    //sd_cs_up();
+    sd_cs_up();
 
     return 0;
 }
