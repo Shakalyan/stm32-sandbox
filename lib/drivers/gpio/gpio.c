@@ -65,6 +65,7 @@ void gpio_set_af(gpio_t *gpio, int value)
         gpio->regs->AFRL |= (value<<(4*pin));
     }
     else {
+        pin %= 8;
         gpio->regs->AFRH &= ~(0b1111<<(4*pin));
         gpio->regs->AFRH |= (value<<(4*pin));
     }
