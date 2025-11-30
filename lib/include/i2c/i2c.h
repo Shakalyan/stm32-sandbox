@@ -2,7 +2,7 @@
 #define _I2C_H_
 
 #include <stdint.h>
-#include <gpio.h>
+#include <gpio/gpio.h>
 
 
 typedef volatile struct i2c_regs {

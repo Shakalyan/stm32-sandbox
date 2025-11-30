@@ -322,3 +322,11 @@ void rcc_spi_enable(spi_num_t spi_num)
     __DSB();
     __ISB();
 }
+
+
+void rcc_i2c_enable(i2c_num_t num)
+{
+    RCC->APB1ENR |= (1<<(21+num));
+    __DSB();
+    __ISB();
+}

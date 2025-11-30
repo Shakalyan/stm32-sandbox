@@ -7,6 +7,7 @@
 #include <uart/uart.h>
 #include <timer_basic/timer_basic.h>
 #include <spi/spi.h>
+#include <i2c/i2c.h>
 
 
 #define RCC_CFGR_CLK_HSI   ((0b00))
@@ -89,6 +90,8 @@ void rcc_gpio_enable(gpio_port_t gpio_num);
 void rcc_spi_enable(spi_num_t spi_num);
 
 void rcc_timer_basic_enable(timer_basic_num_t num);
+
+void rcc_i2c_enable(i2c_num_t num);
 
 uint32_t rcc_get_sysclk_freq_khz();
 

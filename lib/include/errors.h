@@ -9,6 +9,7 @@ typedef enum error {
     I2C_FREQ_NOT_SUPPORTED,
     I2C_APB1_FREQ_NOT_SUPPORTED,
     I2C_BUSY,
+    TIMEOUT,
 } error_t;
 
 #endif

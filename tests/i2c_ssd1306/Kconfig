@@ -1,0 +1,5 @@
+config TEST_I2C_SSD1306
+    bool "I2C SSD1306"
+    default n
+    select DRIVER_I2C
+    select COMMON_TIMER
