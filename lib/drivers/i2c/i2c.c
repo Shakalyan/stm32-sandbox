@@ -102,5 +102,6 @@ int i2c_stop(i2c_t *i2c)
 {
     while (!(i2c->regs->SR1 & I2C_SR1_BTF));
     SET_BIT(i2c->regs->CR1, I2C_CR1_STOP);
+    while (i2c->regs->SR2 & I2C_SR2_BUSY);
     return 0;
 }

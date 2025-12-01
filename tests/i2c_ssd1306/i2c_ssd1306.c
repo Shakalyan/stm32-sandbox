@@ -6,6 +6,34 @@
 
 #define SSD1306_CMD_DISPLAY_ONOFF(x) ((0xAE | x))
 
+#define SSD1306_CB_CO BIT(7)
+#define SSD1306_CB_DC BIT(6)
+
+typedef enum tx_type {
+    TX_COMMAND,
+    TX_DATA
+} tx_type_t;
+
+
+int ssd1306_tx(i2c_t *i2c, tx_type_t tx_type, uint8_t data)
+{
+    int err;
+    err = i2c_start(i2c, 0x78);
+    if (err) {
+        pr_error("I2C: failed to send SB\n");
+        return err;
+    }
+
+    if (tx_type == TX_COMMAND)
+        i2c_tx(i2c, SSD1306_CB_CO);
+    else
+        i2c_tx(i2c, SSD1306_CB_CO | SSD1306_CB_DC);
+    i2c_tx(i2c, data);
+
+    i2c_stop(i2c);
+    return 0;
+}
+
 
 void main(void)
 {
@@ -48,18 +76,80 @@ void main(void)
     }
     pr_info("I2C init ok\n");
 
-    err = i2c_start(&i2c, 0x78);
-    if (err) {
-        pr_info("I2C start failed\n");
-        goto Finish;
-    }
-    pr_info("I2C start ok\n");
+    // ssd1306_tx(&i2c, TX_COMMAND, SSD1306_CMD_DISPLAY_ONOFF(1));
 
-    i2c_tx(&i2c, SSD1306_CMD_DISPLAY_ONOFF(0));
-    mdelay(3000);
-    i2c_tx(&i2c, SSD1306_CMD_DISPLAY_ONOFF(1));
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x21); // column
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x00);
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x00);
 
-    i2c_stop(&i2c);
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x22); // page
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x00);
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x00);
+
+    // ssd1306_tx(&i2c, TX_DATA, 0xFF);
+
+    // SLEEP MODE
+    ssd1306_tx(&i2c, TX_COMMAND, SSD1306_CMD_DISPLAY_ONOFF(0));
+
+    // CLK div
+    ssd1306_tx(&i2c, TX_COMMAND, 0xD5);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x80);
+
+    // MUX ratio
+    ssd1306_tx(&i2c, TX_COMMAND, 0xA8);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x3F);
+
+    // Display offset
+    ssd1306_tx(&i2c, TX_COMMAND, 0xD3);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x00);
+
+    // Start line
+    ssd1306_tx(&i2c, TX_COMMAND, 0x40);
+
+    // Charge pump
+    ssd1306_tx(&i2c, TX_COMMAND, 0x8D);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x14);
+
+    // Horizontal mode
+    ssd1306_tx(&i2c, TX_COMMAND, 0x20);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x00);
+
+    // Column remap
+    ssd1306_tx(&i2c, TX_COMMAND, 0xA0);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x00);
+
+    // Scan direction
+    ssd1306_tx(&i2c, TX_COMMAND, 0xC8);
+
+    // COM conf
+    ssd1306_tx(&i2c, TX_COMMAND, 0xDA);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x12);
+
+    // Contrast
+    ssd1306_tx(&i2c, TX_COMMAND, 0x81);
+    ssd1306_tx(&i2c, TX_COMMAND, 0xCF);
+
+    // Precharge
+    ssd1306_tx(&i2c, TX_COMMAND, 0xD9);
+    ssd1306_tx(&i2c, TX_COMMAND, 0xF1);
+
+    // VCOM deselect level
+    ssd1306_tx(&i2c, TX_COMMAND, 0xDB);
+    ssd1306_tx(&i2c, TX_COMMAND, 0x40);
+
+    // Display on resume
+    ssd1306_tx(&i2c, TX_COMMAND, 0xA4);
+
+    // Normal display
+    ssd1306_tx(&i2c, TX_COMMAND, 0xA6);
+
+    // On
+    ssd1306_tx(&i2c, TX_COMMAND, 0xAF);
+
+    //ssd1306_tx(&i2c, TX_DATA, 0xFF);
+
+    mdelay(10000);
+    ssd1306_tx(&i2c, TX_COMMAND, SSD1306_CMD_DISPLAY_ONOFF(0));
 
     pr_info("test finished\n");
 
