@@ -119,7 +119,7 @@ void main(void)
     ssd1306_tx(&i2c, TX_COMMAND, 0x00);
 
     // Scan direction
-    ssd1306_tx(&i2c, TX_COMMAND, 0xC8);
+    //ssd1306_tx(&i2c, TX_COMMAND, 0xC8);
 
     // COM conf
     ssd1306_tx(&i2c, TX_COMMAND, 0xDA);
@@ -146,7 +146,16 @@ void main(void)
     // On
     ssd1306_tx(&i2c, TX_COMMAND, 0xAF);
 
-    //ssd1306_tx(&i2c, TX_DATA, 0xFF);
+
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x21);
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x0);
+    // ssd1306_tx(&i2c, TX_COMMAND, 0x127);
+
+    for (int i = 0; i < 16*128; ++i)
+        ssd1306_tx(&i2c, TX_DATA, 0xFF);
+
+    for (int i = 0; i < 64*128; ++i)
+        ssd1306_tx(&i2c, TX_DATA, 0x00);
 
     mdelay(10000);
     ssd1306_tx(&i2c, TX_COMMAND, SSD1306_CMD_DISPLAY_ONOFF(0));
